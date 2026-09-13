@@ -1,0 +1,248 @@
+import React from 'react'
+import { createRoot } from 'react-dom/client'
+import { motion, AnimatePresence } from 'motion/react'
+import {
+  ArrowDown, ArrowUpRight, BrainCircuit, BriefcaseBusiness, CheckCircle2, Code2,
+  Database, Download, ExternalLink, GraduationCap, Layers3, Mail, Menu, Moon,
+  Server, Sparkles, Sun, Terminal, X, Bot, Send, Search
+} from 'lucide-react'
+import './index.css'
+
+const skills = [
+  { name:'C++ & DSA', group:'Core', icon:Code2 }, { name:'HTML & CSS', group:'Frontend', icon:Layers3 },
+  { name:'JavaScript', group:'Frontend', icon:Code2 }, { name:'React + Vite', group:'Frontend', icon:Sparkles },
+  { name:'Tailwind CSS', group:'Frontend', icon:Sparkles }, { name:'Node.js + Express', group:'Backend', icon:Server },
+  { name:'REST APIs', group:'Backend', icon:Server }, { name:'Supabase', group:'Database', icon:Database },
+  { name:'Firebase', group:'Database', icon:Database }, { name:'AI / RAG', group:'AI', icon:BrainCircuit },
+  { name:'Git & GitHub', group:'Tools', icon:Code2 },
+]
+
+const projects = [
+  { number:'01', title:'Catalog AI — Product Enhancement', label:'AI PRODUCT DATA', desc:'An AI-assisted product enhancement and cataloging engine that turns raw product information into structured, review-ready catalog data.', problem:'Manual product cataloging is repetitive and inconsistent.', solution:'Uses AI-assisted enrichment, classification and structured outputs to reduce repetitive catalog work.', tags:['AI','RAG','React','Product Data'], status:'Featured', image:'/project.png', caseStudy:['Goal','Make product data richer and more consistent for catalog workflows.','Approach','Combine structured product attributes with AI-assisted enrichment and review-ready output.','Learning','Good AI UX needs reliable structured data, validation and a clear human review step.'] },
+  { number:'02', title:'ApniDukaan', label:'FULL-STACK + AI', desc:'A practical platform concept for small and less-technical shopkeepers, focused on simpler product entry, orders and business insights.', problem:'Small merchants often manage inventory and orders manually.', solution:'A voice-friendly, dashboard-based workflow designed to make everyday shop management easier.', tags:['React','Node.js','Supabase','AI'], status:'Featured', image:'/project.png', caseStudy:['Goal','Reduce friction for small-shop management.','Approach','Design a simple merchant dashboard with product, order and assistant workflows.', 'Learning','Accessibility and simple workflows matter as much as the technology.'] },
+  { number:'03', title:'CineBook', label:'WEB APPLICATION', desc:'A movie booking application with a responsive booking flow, Supabase data layer and QR-based confirmation experience.', problem:'Users need a simple way to discover shows and complete bookings.', solution:'Built a clean booking flow with persistent data and QR confirmation.', tags:['React','Supabase','QR','Tailwind'], link:'https://cinebook-sahu.netlify.app/', status:'Live', image:'/project.png', caseStudy:['Goal','Create a practical end-to-end booking experience.','Approach','Connect a responsive UI to Supabase-backed booking data and QR confirmation.', 'Learning','Database design and clear state transitions are critical in transactional UIs.'] },
+  { number:'04', title:'KrishiMitra', label:'SMART AGRICULTURE', desc:'A React-based agriculture platform bringing weather, market information, disease guidance, dashboard and chat experiences together.', problem:'Useful agriculture information can be scattered across different sources.', solution:'A single responsive interface for practical farming information and tools.', tags:['React','Vite','Axios','Tailwind'], status:'In progress', image:'/project.png', caseStudy:['Goal','Bring multiple farmer-focused utilities into one interface.','Approach','Use React pages and API-driven modules for weather, market and guidance experiences.', 'Learning','Good information architecture can make multiple data sources feel like one product.'] },
+  { number:'05', title:'Parking Management System', label:'DATABASE APPLICATION', desc:'A parking management system for tracking records and slot availability, being evolved toward a React + Supabase architecture.', problem:'Manual parking records make slot and vehicle tracking harder.', solution:'Digitized records and slot tracking with a database-backed workflow.', tags:['React','Supabase','JavaScript'], link:'https://park-control-abhi.netlify.app/', status:'Live', image:'/project.png', caseStudy:['Goal','Make parking records and slot status easier to manage.','Approach','Move the existing workflow toward reusable React components and Supabase data.', 'Learning','A clean data model makes future automation much easier.'] },
+]
+
+const achievements = [
+  ['Smart India Hackathon','Hackathon-focused product development and problem solving.'],
+  ['AI / ML Internship','Exposure to AI/ML workflows through internship and applied project work.'],
+  ['Google Kaggle AI Agents Intensive','Learning around AI agents and modern AI application workflows.'],
+  ['AKS Develop Community','University developer community involvement and peer learning.'],
+]
+
+const knowledge = [
+  ['skills','Yashvendra works with C++, DSA, HTML, CSS, JavaScript, React, Vite, Tailwind CSS, Node.js, Express, Supabase, Firebase, AI and RAG.'],
+  ['catalog','Catalog AI is an AI-assisted product enhancement and cataloging project focused on structured product data.'],
+  ['apnidukaan','ApniDukaan is a merchant-focused application concept using React, Node.js, Supabase and AI-oriented workflows.'],
+  ['cinebook','CineBook is a movie booking web application using React, Supabase and QR-based confirmation.'],
+  ['krishimitra','KrishiMitra is a React agriculture platform with weather, market, disease, dashboard and chat experiences.'],
+  ['education','Yashvendra is pursuing BCA (Hons) at AKS University, 2024–2027.'],
+]
+
+function Nav(){
+  const [open,setOpen]=React.useState(false); const [dark,setDark]=React.useState(true)
+  React.useEffect(()=>document.documentElement.classList.toggle('light',!dark),[dark])
+  const items=[['About','#about'],['Skills','#skills'],['AI','#ai'],['Projects','#projects'],['Journey','#journey'],['Contact','#contact']]
+  return <header className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/75 backdrop-blur-xl light:bg-white/80 light:border-black/10">
+    <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
+      <a href="#home" className="text-xl font-black tracking-tight"><span className="text-fuchsia-400">Y</span>ashvendra<span className="text-fuchsia-400">.</span></a>
+      <nav className="hidden gap-7 text-sm text-zinc-300 md:flex light:text-zinc-700">{items.map(([n,h])=><a className="transition hover:text-fuchsia-400" href={h} key={n}>{n}</a>)}</nav>
+      <div className="flex items-center gap-2"><button onClick={()=>setDark(v=>!v)} className="rounded-xl border border-white/10 bg-white/5 p-2.5 light:border-black/10 light:bg-black/5" aria-label="Toggle theme">{dark?<Sun size={17}/>:<Moon size={17}/>}</button><a href="#contact" className="hidden rounded-xl bg-white px-4 py-2 text-sm font-bold text-black md:inline-flex">Let's talk</a><button className="md:hidden" onClick={()=>setOpen(!open)} aria-label="Toggle menu">{open?<X/>:<Menu/>}</button></div>
+    </div>
+    {open&&<nav className="border-t border-white/10 bg-black px-5 py-3 md:hidden light:bg-white">{items.map(([n,h])=><a onClick={()=>setOpen(false)} className="block py-3 text-zinc-300 light:text-zinc-700" href={h} key={n}>{n}</a>)}</nav>}
+  </header>
+}
+
+function Button({children,href='#',secondary=false}){return <a href={href} target={href.startsWith('http')?'_blank':undefined} rel="noreferrer" className={`glow-btn inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold transition ${secondary?'border border-white/15 bg-white/5 hover:bg-white/10 light:border-black/10 light:bg-black/5':'bg-fuchsia-500 text-white hover:bg-fuchsia-400'}`}>{children}</a>}
+function SectionHeading({eyebrow,title,text}){return <div className="max-w-3xl"><p className="text-xs font-bold uppercase tracking-[.28em] text-fuchsia-400">{eyebrow}</p><h2 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">{title}</h2>{text&&<p className="mt-4 leading-7 text-zinc-400 light:text-zinc-600">{text}</p>}</div>}
+
+function Assistant() {
+  const [open, setOpen] = React.useState(false);
+  const [q, setQ] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+
+  const [messages, setMessages] = React.useState([
+    {
+      role: "bot",
+      text: "Hi! I'm Yashvendra's AI portfolio assistant. Ask me about his skills, projects, AI/RAG work or education.",
+    },
+  ]);
+
+  async function ask(e) {
+    e.preventDefault();
+
+    const text = q.trim();
+
+    if (!text || loading) return;
+
+    setMessages((m) => [
+      ...m,
+      {
+        role: "user",
+        text,
+      },
+    ]);
+
+    setQ("");
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:3001/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: text,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Request failed");
+      }
+
+      setMessages((m) => [
+        ...m,
+        {
+          role: "bot",
+          text: data.answer,
+        },
+      ]);
+    } catch (error) {
+      setMessages((m) => [
+        ...m,
+        {
+          role: "bot",
+          text: "Sorry, the AI assistant is currently unavailable.",
+        },
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        className="assistant-launch fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-fuchsia-500 px-4 py-3 font-bold text-white shadow-2xl shadow-fuchsia-900/40"
+      >
+        <Bot size={18} />
+        Ask my portfolio
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            className="fixed inset-0 z-[70] flex items-end justify-end bg-black/50 p-4 backdrop-blur-sm sm:items-end"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 30, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 30, scale: 0.97 }}
+              className="w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-zinc-950 shadow-2xl"
+            >
+              <div className="flex items-center justify-between border-b border-white/10 p-5">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-widest text-fuchsia-400">
+                    AI Portfolio Assistant
+                  </p>
+
+                  <h3 className="mt-1 font-bold">
+                    Ask about Yashvendra
+                  </h3>
+                </div>
+
+                <button onClick={() => setOpen(false)}>
+                  <X />
+                </button>
+              </div>
+
+              <div className="h-[420px] space-y-4 overflow-y-auto p-5">
+                {messages.map((message, index) => (
+                  <div
+                    key={index}
+                    className={`flex ${
+                      message.role === "user"
+                        ? "justify-end"
+                        : "justify-start"
+                    }`}
+                  >
+                    <div
+                      className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-6 ${
+                        message.role === "user"
+                          ? "bg-fuchsia-500 text-white"
+                          : "bg-white/5 text-zinc-300"
+                      }`}
+                    >
+                      {message.text}
+                    </div>
+                  </div>
+                ))}
+
+                {loading && (
+                  <div className="flex items-center gap-2 text-sm text-zinc-500">
+                    <Bot size={16} />
+                    Thinking...
+                  </div>
+                )}
+              </div>
+
+              <form
+                onSubmit={ask}
+                className="border-t border-white/10 p-4"
+              >
+                <div className="flex gap-2">
+                  <input
+                    value={q}
+                    onChange={(e) => setQ(e.target.value)}
+                    placeholder="Ask about my projects..."
+                    className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-fuchsia-400"
+                  />
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="rounded-xl bg-fuchsia-500 px-4 text-white disabled:opacity-50"
+                  >
+                    <Send size={18} />
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
+  );
+}
+
+function App(){
+ const [selected,setSelected]=React.useState(null)
+ return <><Nav/><main>
+  <section id="home" className="hero-grid relative overflow-hidden px-5 pb-28 pt-36 lg:px-8 lg:pb-40 lg:pt-48"><div className="glow glow-one"/><div className="glow glow-two"/><div className="mx-auto grid max-w-7xl items-center gap-14 lg:grid-cols-[1.15fr_.85fr]"><motion.div initial={{opacity:0,y:24}} animate={{opacity:1,y:0}} transition={{duration:.65}}><div className="mb-6 inline-flex items-center gap-2 rounded-full border border-fuchsia-400/20 bg-fuchsia-400/5 px-4 py-2 text-xs font-bold text-fuchsia-300"><span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400"/> Open to internships & opportunities</div><p className="mb-4 text-sm font-semibold uppercase tracking-[.22em] text-zinc-400">Hello, I'm Yashvendra Sahu</p><h1 className="max-w-5xl text-5xl font-black leading-[.95] tracking-[-.05em] sm:text-7xl lg:text-[6.7rem]">Building <span className="gradient-text">AI-powered</span><br/>digital products.</h1><p className="mt-8 max-w-2xl text-lg leading-8 text-zinc-400 light:text-zinc-600">BCA student and developer focused on React, full-stack web development and practical AI applications using RAG, APIs and modern databases.</p><div className="mt-9 flex flex-wrap gap-3"><Button href="#projects">Explore my work <ArrowUpRight size={17}/></Button><Button secondary href="/Resume.jpg">Download resume <Download size={17}/></Button></div><div className="mt-10 flex flex-wrap gap-3 text-xs font-bold uppercase tracking-widest text-zinc-500"><span className="pill">React</span><span className="pill">Node.js</span><span className="pill">Supabase</span><span className="pill">AI / RAG</span></div></motion.div><motion.div initial={{opacity:0,scale:.94}} animate={{opacity:1,scale:1}} transition={{duration:.75}} className="mx-auto w-full max-w-lg"><div className="hero-showcase rounded-[2rem] border border-white/10 p-3 shadow-2xl"><div className="relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-black/70"><img src="/project.png" alt="Project showcase" className="h-[390px] w-full object-cover object-center opacity-80"/><div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"/><div className="absolute bottom-0 left-0 right-0 p-6"><div className="flex items-end justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-widest text-fuchsia-300">Featured build</p><h3 className="mt-1 text-2xl font-black">Catalog AI</h3><p className="mt-1 text-sm text-zinc-400">AI-assisted product enhancement</p></div><div className="rounded-2xl border border-white/10 bg-white/10 p-3 backdrop-blur"><BrainCircuit className="text-fuchsia-300"/></div></div></div></div><div className="flex items-center justify-between px-4 py-4"><div><p className="text-sm font-bold">Developer / Builder</p><p className="text-xs text-zinc-500">React · AI · Full Stack</p></div><a href="#ai" className="text-xs font-bold text-fuchsia-400">See AI work →</a></div></div></motion.div></div><a href="#about" className="mx-auto mt-16 flex w-fit items-center gap-2 text-xs uppercase tracking-[.2em] text-zinc-500">Scroll to explore <ArrowDown size={15}/></a></section>
+
+  <section id="about" className="border-y border-white/10 bg-white/[.02] px-5 py-28 lg:px-8"><div className="mx-auto max-w-7xl"><SectionHeading eyebrow="01 · About me" title="I like building things that solve real problems."/><div className="mt-12 grid gap-6 lg:grid-cols-[1.1fr_.9fr]"><div className="rounded-3xl border border-white/10 bg-black/30 p-7 sm:p-10"><p className="text-lg leading-8 text-zinc-300 light:text-zinc-700">I'm a BCA student at AKS University with a strong foundation in <span className="text-white light:text-black">C++ and Data Structures & Algorithms</span>. My current focus is building modern web applications with React and practical AI-powered experiences.</p><p className="mt-6 leading-8 text-zinc-400 light:text-zinc-600">I enjoy taking an idea from problem definition to a working product — designing the UI, connecting APIs and databases, and exploring AI techniques such as RAG when they genuinely improve the experience.</p></div><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1"><div className="rounded-3xl border border-white/10 bg-white/[.03] p-6"><GraduationCap className="text-fuchsia-400"/><p className="mt-5 text-xs uppercase tracking-widest text-zinc-500">Education</p><h3 className="mt-1 text-xl font-bold">BCA (Hons) · AKS University</h3><p className="mt-2 text-sm text-zinc-500">2024 — 2027 · Ongoing</p></div><div className="rounded-3xl border border-white/10 bg-white/[.03] p-6"><Terminal className="text-fuchsia-400"/><p className="mt-5 text-xs uppercase tracking-widest text-zinc-500">Current focus</p><h3 className="mt-1 text-xl font-bold">AI + Full-Stack Development</h3><p className="mt-2 text-sm text-zinc-500">React · Node.js · Supabase · RAG</p></div></div></div></div></section>
+
+  <section id="skills" className="px-5 py-28 lg:px-8"><div className="mx-auto max-w-7xl"><SectionHeading eyebrow="02 · Tech stack" title="Tools I use to turn ideas into products." text="Hover or tap a technology to see how it fits into my workflow."/><div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">{['Frontend','Backend','Database','AI & Tools'].map(group=><div key={group} className="rounded-3xl border border-white/10 bg-white/[.03] p-6"><p className="text-xs font-bold uppercase tracking-[.2em] text-fuchsia-400">{group}</p><div className="mt-5 space-y-3">{skills.filter(s=>s.group===group||(group==='AI & Tools'&&['AI','Tools','Core'].includes(s.group))).map(({name,icon:Icon})=><motion.div whileHover={{x:4,scale:1.015}} key={name} title={`${name} — used in projects and learning workflows`} className="flex items-center gap-3 rounded-xl border border-white/5 bg-black/30 px-4 py-3"><Icon size={17} className="text-fuchsia-400"/><span className="text-sm font-semibold">{name}</span><span className="ml-auto text-[9px] uppercase tracking-widest text-zinc-600">used</span></motion.div>)}</div></div>)}</div></div></section>
+
+  <section id="ai" className="border-y border-white/10 bg-white/[.02] px-5 py-28 lg:px-8"><div className="mx-auto max-w-7xl"><div className="ai-panel rounded-[2rem] border border-fuchsia-400/15 p-7 sm:p-10 lg:p-14"><div className="grid items-center gap-12 lg:grid-cols-[.8fr_1.2fr]"><div><div className="mb-5 inline-flex rounded-2xl border border-fuchsia-400/20 bg-fuchsia-400/10 p-4 text-fuchsia-300"><BrainCircuit size={28}/></div><p className="text-xs font-bold uppercase tracking-[.28em] text-fuchsia-400">AI · RAG · Product Thinking</p><h2 className="mt-4 text-4xl font-black sm:text-5xl">Building AI that fits the product.</h2><p className="mt-5 max-w-xl leading-7 text-zinc-400 light:text-zinc-600">My focus is not just adding an AI button — it is connecting useful data, product context and user workflows so AI solves a real task.</p></div><div className="grid gap-4 sm:grid-cols-2">{[['RAG workflows','Grounding AI experiences in relevant product or knowledge data.'],['AI-powered UX','Using AI where it can reduce manual work or improve discovery.'],['APIs + data','Combining frontend experiences with backend APIs and structured data.'],['Validation','Keeping human review and structured outputs in the loop when accuracy matters.']].map(([t,d])=><div key={t} className="rounded-2xl border border-white/10 bg-black/30 p-5"><h3 className="font-bold">{t}</h3><p className="mt-2 text-sm leading-6 text-zinc-500">{d}</p></div>)}</div></div></div></div></section>
+
+  <section id="projects" className="px-5 py-28 lg:px-8"><div className="mx-auto max-w-7xl"><SectionHeading eyebrow="03 · Selected work" title="Projects with a story behind the code." text="The project cards now emphasize the problem, approach, visual preview and what I learned."/><div className="mt-12 space-y-6">{projects.map((p,i)=><motion.article key={p.title} initial={{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:.12}} transition={{delay:i*.04}} className="project-card overflow-hidden rounded-[2rem] border border-white/10 bg-white/[.025]"><div className="grid lg:grid-cols-[.72fr_1.28fr]"><div className="project-visual relative min-h-[240px] overflow-hidden border-b border-white/10 lg:min-h-full lg:border-b-0 lg:border-r"><img src={p.image} alt={`${p.title} preview`} className="absolute inset-0 h-full w-full object-cover opacity-60 transition duration-500 hover:scale-105"/><div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent"/><div className="absolute left-6 top-6 flex items-center justify-between right-6"><span className="text-5xl font-black text-white/40">{p.number}</span><span className="rounded-full border border-white/10 bg-black/40 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-zinc-300 backdrop-blur">{p.status}</span></div><div className="absolute bottom-6 left-6 right-6"><p className="text-xs font-bold uppercase tracking-[.2em] text-fuchsia-300">{p.label}</p><h3 className="mt-1 text-2xl font-black">{p.title}</h3></div></div><div className="p-7 sm:p-9 lg:p-10"><p className="leading-7 text-zinc-400 light:text-zinc-600">{p.desc}</p><div className="mt-6 grid gap-3 sm:grid-cols-2"><div className="rounded-2xl border border-white/5 bg-black/30 p-5"><p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600">Problem</p><p className="mt-2 text-sm leading-6 text-zinc-400">{p.problem}</p></div><div className="rounded-2xl border border-white/5 bg-black/30 p-5"><p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600">Approach</p><p className="mt-2 text-sm leading-6 text-zinc-400">{p.solution}</p></div></div><div className="mt-6 flex flex-wrap gap-2">{p.tags.map(t=><span key={t} className="rounded-full bg-white/5 px-3 py-1.5 text-xs text-zinc-300">{t}</span>)}</div><div className="mt-7 flex flex-wrap gap-3"><button onClick={()=>setSelected(p)} className="inline-flex items-center gap-2 rounded-xl border border-fuchsia-400/20 bg-fuchsia-400/10 px-4 py-2.5 text-sm font-bold text-fuchsia-300 hover:bg-fuchsia-400/15">View case study <Search size={15}/></button>{p.link&&<a href={p.link} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2.5 text-sm font-bold hover:bg-white/5">Live project <ExternalLink size={15}/></a>}</div></div></div></motion.article>)}</div></div></section>
+
+  <section id="journey" className="border-y border-white/10 bg-white/[.02] px-5 py-28 lg:px-8"><div className="mx-auto max-w-7xl"><SectionHeading eyebrow="04 · Journey" title="Learning by building, shipping and experimenting."/><div className="mt-12 grid gap-10 lg:grid-cols-[1fr_1.15fr]"><div className="rounded-3xl border border-white/10 bg-black/30 p-7 sm:p-9"><div className="flex items-center gap-4"><div className="rounded-2xl bg-fuchsia-400/10 p-3 text-fuchsia-400"><BriefcaseBusiness/></div><div><p className="text-xs uppercase tracking-widest text-zinc-500">Experience</p><h3 className="text-xl font-bold">AI / ML & Developer Journey</h3></div></div><p className="mt-7 leading-8 text-zinc-400 light:text-zinc-600">My learning path has moved from core programming and frontend fundamentals toward full-stack applications and AI-powered products. I learn fastest by turning concepts into working projects.</p><div className="mt-7 space-y-3">{['C++ + DSA foundation','Modern React development','Backend APIs with Node.js / Express','Supabase & Firebase data workflows','AI application development & RAG'].map(x=><div className="flex items-center gap-3 text-sm text-zinc-300 light:text-zinc-700" key={x}><CheckCircle2 size={17} className="text-fuchsia-400"/>{x}</div>)}</div></div><div><p className="mb-5 text-xs font-bold uppercase tracking-[.2em] text-zinc-500">Highlights</p><div className="space-y-4">{achievements.map(([title,desc])=><div key={title} className="rounded-2xl border border-white/10 bg-black/20 p-5"><h3 className="font-bold">{title}</h3><p className="mt-2 text-sm leading-6 text-zinc-500">{desc}</p></div>)}</div></div></div></div></section>
+
+  <section id="contact" className="px-5 py-28 lg:px-8"><div className="mx-auto max-w-5xl rounded-[2rem] border border-fuchsia-400/15 bg-gradient-to-br from-fuchsia-500/10 via-white/[.03] to-transparent p-8 text-center sm:p-14 lg:p-20"><Mail className="mx-auto text-fuchsia-400" size={28}/><p className="mt-6 text-xs font-bold uppercase tracking-[.28em] text-fuchsia-400">05 · Contact</p><h2 className="mt-4 text-4xl font-black sm:text-6xl">Let's build something useful.</h2><p className="mx-auto mt-5 max-w-2xl leading-7 text-zinc-400 light:text-zinc-600">Looking for internships, collaborations or opportunities to build real software and AI-powered products.</p><div className="mt-9 flex flex-wrap justify-center gap-3"><Button href="mailto:satishsahu724096@gmail.com">Email me <Mail size={17}/></Button><Button secondary href="https://github.com/Yashvendrasahu">GitHub <Code2 size={17}/></Button><Button secondary href="https://www.linkedin.com/in/yashvendra-sahu-4b8070310">LinkedIn <ExternalLink size={17}/></Button></div></div></section>
+ </main><footer className="border-t border-white/10 px-5 py-10 lg:px-8"><div className="mx-auto flex max-w-7xl flex-col gap-4 text-sm text-zinc-600 sm:flex-row sm:items-center sm:justify-between"><p>© 2026 Yashvendra Sahu</p><p>React · Vite · Tailwind CSS · AI / RAG</p></div></footer><Assistant/>
+ <AnimatePresence>{selected&&<motion.div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-5 backdrop-blur-sm" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={()=>setSelected(null)}><motion.div initial={{y:25,opacity:0}} animate={{y:0,opacity:1}} exit={{y:25,opacity:0}} onClick={e=>e.stopPropagation()} className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-white/10 bg-zinc-950 p-7 light:bg-white sm:p-9"><div className="flex items-start justify-between gap-5"><div><p className="text-xs font-bold uppercase tracking-widest text-fuchsia-400">Case study</p><h2 className="mt-2 text-3xl font-black">{selected.title}</h2></div><button onClick={()=>setSelected(null)}><X/></button></div><div className="mt-8 space-y-5">{[0,2,4].map(i=><div key={i} className="rounded-2xl border border-white/10 bg-white/[.03] p-5"><p className="text-xs font-bold uppercase tracking-widest text-fuchsia-400">{selected.caseStudy[i]}</p><p className="mt-2 leading-7 text-zinc-400 light:text-zinc-600">{selected.caseStudy[i+1]}</p></div>)}</div></motion.div></motion.div>}</AnimatePresence>
+ </>
+}
+
+createRoot(document.getElementById('root')).render(<App />)
