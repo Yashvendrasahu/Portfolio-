@@ -58,170 +58,34 @@ function Nav(){
 function Button({children,href='#',secondary=false}){return <a href={href} target={href.startsWith('http')?'_blank':undefined} rel="noreferrer" className={`glow-btn inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold transition ${secondary?'border border-white/15 bg-white/5 hover:bg-white/10 light:border-black/10 light:bg-black/5':'bg-fuchsia-500 text-white hover:bg-fuchsia-400'}`}>{children}</a>}
 function SectionHeading({eyebrow,title,text}){return <div className="max-w-3xl"><p className="text-xs font-bold uppercase tracking-[.28em] text-fuchsia-400">{eyebrow}</p><h2 className="mt-3 text-4xl font-black tracking-tight sm:text-5xl">{title}</h2>{text&&<p className="mt-4 leading-7 text-zinc-400 light:text-zinc-600">{text}</p>}</div>}
 
-function Assistant() {
-  const [open, setOpen] = React.useState(false);
-  const [q, setQ] = React.useState("");
-  const [loading, setLoading] = React.useState(false);
+function Assistant(){
+  const [open,setOpen]=React.useState(false)
+  const [q,setQ]=React.useState('')
+  const [loading,setLoading]=React.useState(false)
+  const [messages,setMessages]=React.useState([{role:'bot',text:'Hi! Ask me about Yashvendra, his projects, skills, achievements or education.'}])
 
-  const [messages, setMessages] = React.useState([
-    {
-      role: "bot",
-      text: "Hi! I'm Yashvendra's AI portfolio assistant. Ask me about his skills, projects, AI/RAG work or education.",
-    },
-  ]);
-
-  async function ask(e) {
-    e.preventDefault();
-
-    const text = q.trim();
-
-    if (!text || loading) return;
-
-    setMessages((m) => [
-      ...m,
-      {
-        role: "user",
-        text,
-      },
-    ]);
-
-    setQ("");
-    setLoading(true);
-
-    try {
-      const response = await fetch("http://localhost:3001/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: text,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Request failed");
-      }
-
-      setMessages((m) => [
-        ...m,
-        {
-          role: "bot",
-          text: data.answer,
-        },
-      ]);
-    } catch (error) {
-      setMessages((m) => [
-        ...m,
-        {
-          role: "bot",
-          text: "Sorry, the AI assistant is currently unavailable.",
-        },
-      ]);
-    } finally {
-      setLoading(false);
-    }
+  async function ask(e){
+    e.preventDefault()
+    const text=q.trim()
+    if(!text || loading)return
+    setMessages(m=>[...m,{role:'user',text}])
+    setQ('')
+    setLoading(true)
+    try{
+      const response=await fetch('/api/chat',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({message:text})
+      })
+      const data=await response.json()
+      if(!response.ok)throw new Error(data.error||'Request failed')
+      setMessages(m=>[...m,{role:'bot',text:data.answer}])
+    }catch(error){
+      setMessages(m=>[...m,{role:'bot',text:'AI assistant is temporarily unavailable. Please try again.'}])
+    }finally{setLoading(false)}
   }
 
-  return (
-    <>
-      <button
-        onClick={() => setOpen(true)}
-        className="assistant-launch fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-fuchsia-500 px-4 py-3 font-bold text-white shadow-2xl shadow-fuchsia-900/40"
-      >
-        <Bot size={18} />
-        Ask my portfolio
-      </button>
-
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            className="fixed inset-0 z-[70] flex items-end justify-end bg-black/50 p-4 backdrop-blur-sm sm:items-end"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 30, scale: 0.97 }}
-              className="w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-zinc-950 shadow-2xl"
-            >
-              <div className="flex items-center justify-between border-b border-white/10 p-5">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-fuchsia-400">
-                    AI Portfolio Assistant
-                  </p>
-
-                  <h3 className="mt-1 font-bold">
-                    Ask about Yashvendra
-                  </h3>
-                </div>
-
-                <button onClick={() => setOpen(false)}>
-                  <X />
-                </button>
-              </div>
-
-              <div className="h-[420px] space-y-4 overflow-y-auto p-5">
-                {messages.map((message, index) => (
-                  <div
-                    key={index}
-                    className={`flex ${
-                      message.role === "user"
-                        ? "justify-end"
-                        : "justify-start"
-                    }`}
-                  >
-                    <div
-                      className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-6 ${
-                        message.role === "user"
-                          ? "bg-fuchsia-500 text-white"
-                          : "bg-white/5 text-zinc-300"
-                      }`}
-                    >
-                      {message.text}
-                    </div>
-                  </div>
-                ))}
-
-                {loading && (
-                  <div className="flex items-center gap-2 text-sm text-zinc-500">
-                    <Bot size={16} />
-                    Thinking...
-                  </div>
-                )}
-              </div>
-
-              <form
-                onSubmit={ask}
-                className="border-t border-white/10 p-4"
-              >
-                <div className="flex gap-2">
-                  <input
-                    value={q}
-                    onChange={(e) => setQ(e.target.value)}
-                    placeholder="Ask about my projects..."
-                    className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none focus:border-fuchsia-400"
-                  />
-
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="rounded-xl bg-fuchsia-500 px-4 text-white disabled:opacity-50"
-                  >
-                    <Send size={18} />
-                  </button>
-                </div>
-              </form>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
+  return <><button onClick={()=>setOpen(true)} className="assistant-launch fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-fuchsia-500 px-4 py-3 font-bold text-white shadow-2xl shadow-fuchsia-900/40"><Bot size={18}/> Ask my portfolio</button><AnimatePresence>{open&&<motion.div initial={{opacity:0,y:20,scale:.97}} animate={{opacity:1,y:0,scale:1}} exit={{opacity:0,y:20}} className="assistant-panel fixed bottom-20 right-5 z-50 w-[calc(100vw-2.5rem)] max-w-sm overflow-hidden rounded-3xl border border-white/10 bg-zinc-950 shadow-2xl light:bg-white light:border-black/10"><div className="flex items-center justify-between border-b border-white/10 p-4"><div className="flex items-center gap-2"><Bot size={18} className="text-fuchsia-400"/><b>Portfolio Assistant</b></div><button onClick={()=>setOpen(false)}><X size={18}/></button></div><div className="max-h-80 space-y-3 overflow-y-auto p-4">{messages.map((m,i)=><div key={i} className={m.role==='user'?'ml-8 rounded-2xl bg-fuchsia-500 p-3 text-sm text-white':'mr-4 rounded-2xl bg-white/5 p-3 text-sm leading-6 text-zinc-300 light:bg-black/5 light:text-zinc-700'}>{m.text}</div>)}{loading&&<div className="mr-4 rounded-2xl bg-white/5 p-3 text-sm text-zinc-500 light:bg-black/5">Thinking…</div>}</div><form onSubmit={ask} className="flex gap-2 border-t border-white/10 p-3"><input value={q} onChange={e=>setQ(e.target.value)} placeholder="Ask about Catalog AI..." disabled={loading} className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-fuchsia-400 light:border-black/10 light:bg-black/5"/><button disabled={loading} className="rounded-xl bg-fuchsia-500 p-2.5 text-white disabled:opacity-50"><Send size={17}/></button></form><p className="px-4 pb-3 text-[10px] text-zinc-600">Powered by Gemini. Portfolio context is sent to the AI API; the API key stays server-side.</p></motion.div>}</AnimatePresence></>
 }
 
 function App(){
@@ -239,7 +103,7 @@ function App(){
 
   <section id="journey" className="border-y border-white/10 bg-white/[.02] px-5 py-28 lg:px-8"><div className="mx-auto max-w-7xl"><SectionHeading eyebrow="04 · Journey" title="Learning by building, shipping and experimenting."/><div className="mt-12 grid gap-10 lg:grid-cols-[1fr_1.15fr]"><div className="rounded-3xl border border-white/10 bg-black/30 p-7 sm:p-9"><div className="flex items-center gap-4"><div className="rounded-2xl bg-fuchsia-400/10 p-3 text-fuchsia-400"><BriefcaseBusiness/></div><div><p className="text-xs uppercase tracking-widest text-zinc-500">Experience</p><h3 className="text-xl font-bold">AI / ML & Developer Journey</h3></div></div><p className="mt-7 leading-8 text-zinc-400 light:text-zinc-600">My learning path has moved from core programming and frontend fundamentals toward full-stack applications and AI-powered products. I learn fastest by turning concepts into working projects.</p><div className="mt-7 space-y-3">{['C++ + DSA foundation','Modern React development','Backend APIs with Node.js / Express','Supabase & Firebase data workflows','AI application development & RAG'].map(x=><div className="flex items-center gap-3 text-sm text-zinc-300 light:text-zinc-700" key={x}><CheckCircle2 size={17} className="text-fuchsia-400"/>{x}</div>)}</div></div><div><p className="mb-5 text-xs font-bold uppercase tracking-[.2em] text-zinc-500">Highlights</p><div className="space-y-4">{achievements.map(([title,desc])=><div key={title} className="rounded-2xl border border-white/10 bg-black/20 p-5"><h3 className="font-bold">{title}</h3><p className="mt-2 text-sm leading-6 text-zinc-500">{desc}</p></div>)}</div></div></div></div></section>
 
-  <section id="contact" className="px-5 py-28 lg:px-8"><div className="mx-auto max-w-5xl rounded-[2rem] border border-fuchsia-400/15 bg-gradient-to-br from-fuchsia-500/10 via-white/[.03] to-transparent p-8 text-center sm:p-14 lg:p-20"><Mail className="mx-auto text-fuchsia-400" size={28}/><p className="mt-6 text-xs font-bold uppercase tracking-[.28em] text-fuchsia-400">05 · Contact</p><h2 className="mt-4 text-4xl font-black sm:text-6xl">Let's build something useful.</h2><p className="mx-auto mt-5 max-w-2xl leading-7 text-zinc-400 light:text-zinc-600">Looking for internships, collaborations or opportunities to build real software and AI-powered products.</p><div className="mt-9 flex flex-wrap justify-center gap-3"><Button href="mailto:satishsahu724096@gmail.com">Email me <Mail size={17}/></Button><Button secondary href="https://github.com/Yashvendrasahu">GitHub <Code2 size={17}/></Button><Button secondary href="https://www.linkedin.com/in/yashvendra-sahu-4b8070310">LinkedIn <ExternalLink size={17}/></Button></div></div></section>
+  <section id="contact" className="px-5 py-28 lg:px-8"><div className="mx-auto max-w-5xl rounded-[2rem] border border-fuchsia-400/15 bg-gradient-to-br from-fuchsia-500/10 via-white/[.03] to-transparent p-8 text-center sm:p-14 lg:p-20"><Mail className="mx-auto text-fuchsia-400" size={28}/><p className="mt-6 text-xs font-bold uppercase tracking-[.28em] text-fuchsia-400">05 · Contact</p><h2 className="mt-4 text-4xl font-black sm:text-6xl">Let's build something useful.</h2><p className="mx-auto mt-5 max-w-2xl leading-7 text-zinc-400 light:text-zinc-600">Looking for internships, collaborations or opportunities to build real software and AI-powered products.</p><div className="mt-9 flex flex-wrap justify-center gap-3"><Button href="mailto:yadvendrasingrual@gmail.com">Email me <Mail size={17}/></Button><Button secondary href="https://github.com/Yashvendrasahu">GitHub <Code2 size={17}/></Button><Button secondary href="https://www.linkedin.com/in/yashvendra-sahu-4b8070310">LinkedIn <ExternalLink size={17}/></Button></div></div></section>
  </main><footer className="border-t border-white/10 px-5 py-10 lg:px-8"><div className="mx-auto flex max-w-7xl flex-col gap-4 text-sm text-zinc-600 sm:flex-row sm:items-center sm:justify-between"><p>© 2026 Yashvendra Sahu</p><p>React · Vite · Tailwind CSS · AI / RAG</p></div></footer><Assistant/>
  <AnimatePresence>{selected&&<motion.div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-5 backdrop-blur-sm" initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={()=>setSelected(null)}><motion.div initial={{y:25,opacity:0}} animate={{y:0,opacity:1}} exit={{y:25,opacity:0}} onClick={e=>e.stopPropagation()} className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-white/10 bg-zinc-950 p-7 light:bg-white sm:p-9"><div className="flex items-start justify-between gap-5"><div><p className="text-xs font-bold uppercase tracking-widest text-fuchsia-400">Case study</p><h2 className="mt-2 text-3xl font-black">{selected.title}</h2></div><button onClick={()=>setSelected(null)}><X/></button></div><div className="mt-8 space-y-5">{[0,2,4].map(i=><div key={i} className="rounded-2xl border border-white/10 bg-white/[.03] p-5"><p className="text-xs font-bold uppercase tracking-widest text-fuchsia-400">{selected.caseStudy[i]}</p><p className="mt-2 leading-7 text-zinc-400 light:text-zinc-600">{selected.caseStudy[i+1]}</p></div>)}</div></motion.div></motion.div>}</AnimatePresence>
  </>
