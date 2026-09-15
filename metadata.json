@@ -1,0 +1,8 @@
+{
+  "name": "Yashvendra Sahu Portfolio",
+  "description": "AI-Powered Full Stack Developer portfolio with interactive RAG-based AI assistant",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
