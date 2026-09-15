@@ -1,0 +1,127 @@
+{
+  "about": {
+    "name": "Yashvendra Sahu",
+    "education": "BCA (Hons)",
+    "university": "AKS University",
+    "duration": "2024-2027",
+    "focus": [
+      "Modern Web Development",
+      "Full-Stack Applications",
+      "AI-Powered Applications",
+      "RAG-Based Systems"
+    ]
+  },
+
+  "skills": {
+    "programming": [
+      "C++",
+      "JavaScript"
+    ],
+    "web": [
+      "HTML",
+      "CSS",
+      "React",
+      "Vite",
+      "Tailwind CSS"
+    ],
+    "backend": [
+      "Node.js",
+      "Express.js",
+      "REST APIs"
+    ],
+    "database": [
+      "Supabase",
+      "Firebase"
+    ],
+    "ai": [
+      "AI",
+      "RAG",
+      "AI-powered applications"
+    ],
+    "tools": [
+      "Git",
+      "GitHub"
+    ]
+  },
+
+  "projects": [
+    {
+      "id": "catalog-ai",
+      "name": "Catalog AI",
+      "category": "AI Product Enhancement",
+      "description": "AI-assisted product enhancement and cataloging focused on structured, review-ready product data.",
+      "technologies": [
+        "AI/ML",
+        "LLM APIs",
+        "React",
+        "Node.js",
+        "Firebase"
+      ]
+    },
+
+    {
+      "id": "apnidukaan",
+      "name": "ApniDukaan",
+      "category": "Merchant Application",
+      "description": "A merchant-focused application concept for small and less-technical shopkeepers.",
+      "technologies": [
+        "React",
+        "Node.js",
+        "Supabase",
+        "AI-oriented workflows"
+      ]
+    },
+
+    {
+      "id": "cinebook",
+      "name": "CineBook",
+      "category": "Movie Booking",
+      "description": "A movie booking web application with QR-based booking confirmation.",
+      "technologies": [
+        "React",
+        "Supabase",
+        "QR"
+      ]
+    },
+
+    {
+      "id": "krishimitra",
+      "name": "KrishiMitra",
+      "category": "Agriculture Platform",
+      "description": "A React agriculture platform with weather, market, disease guidance, dashboard and chat experiences.",
+      "technologies": [
+        "React",
+        "Vite",
+        "Tailwind CSS",
+        "Axios"
+      ]
+    },
+
+    {
+      "id": "parking-management",
+      "name": "Parking Management System",
+      "category": "Parking Management",
+      "description": "A parking application for tracking parking records and slot availability.",
+      "technologies": [
+        "React",
+        "Supabase"
+      ]
+    }
+  ],
+
+  "ai": {
+    "focus": [
+      "AI-powered applications",
+      "RAG",
+      "LLM-based workflows"
+    ],
+    "goal": "Use AI with relevant information to produce grounded and useful responses."
+  },
+
+  "achievements": [
+    "Smart India Hackathon",
+    "AI/ML Internship",
+    "Google Kaggle AI Agents Intensive",
+    "AKS Develop Community"
+  ]
+}
