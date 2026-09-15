@@ -63,11 +63,21 @@ function Assistant(){
   const [q,setQ]=React.useState('')
   const [loading,setLoading]=React.useState(false)
   const [messages,setMessages]=React.useState([{role:'bot',text:'Hi! Ask me about Yashvendra, his projects, skills, achievements or education.'}])
+  const messagesEndRef = React.useRef(null)
 
-  async function ask(e){
-    e.preventDefault()
-    const text=q.trim()
-    if(!text || loading)return
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  React.useEffect(() => {
+    if (open) {
+      scrollToBottom()
+    }
+  }, [messages, open, loading])
+
+  async function sendMessage(textToSend) {
+    const text = (textToSend || q).trim()
+    if(!text || loading) return
     setMessages(m=>[...m,{role:'user',text}])
     setQ('')
     setLoading(true)
@@ -85,7 +95,19 @@ function Assistant(){
     }finally{setLoading(false)}
   }
 
-  return <><button onClick={()=>setOpen(true)} className="assistant-launch fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-fuchsia-500 px-4 py-3 font-bold text-white shadow-2xl shadow-fuchsia-900/40"><Bot size={18}/> Ask my portfolio</button><AnimatePresence>{open&&<motion.div initial={{opacity:0,y:20,scale:.97}} animate={{opacity:1,y:0,scale:1}} exit={{opacity:0,y:20}} className="assistant-panel fixed bottom-20 right-5 z-50 w-[calc(100vw-2.5rem)] max-w-sm overflow-hidden rounded-3xl border border-white/10 bg-zinc-950 shadow-2xl light:bg-white light:border-black/10"><div className="flex items-center justify-between border-b border-white/10 p-4"><div className="flex items-center gap-2"><Bot size={18} className="text-fuchsia-400"/><b>Portfolio Assistant</b></div><button onClick={()=>setOpen(false)}><X size={18}/></button></div><div className="max-h-80 space-y-3 overflow-y-auto p-4">{messages.map((m,i)=><div key={i} className={m.role==='user'?'ml-8 rounded-2xl bg-fuchsia-500 p-3 text-sm text-white':'mr-4 rounded-2xl bg-white/5 p-3 text-sm leading-6 text-zinc-300 light:bg-black/5 light:text-zinc-700'}>{m.text}</div>)}{loading&&<div className="mr-4 rounded-2xl bg-white/5 p-3 text-sm text-zinc-500 light:bg-black/5">Thinking…</div>}</div><form onSubmit={ask} className="flex gap-2 border-t border-white/10 p-3"><input value={q} onChange={e=>setQ(e.target.value)} placeholder="Ask about Catalog AI..." disabled={loading} className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-fuchsia-400 light:border-black/10 light:bg-black/5"/><button disabled={loading} className="rounded-xl bg-fuchsia-500 p-2.5 text-white disabled:opacity-50"><Send size={17}/></button></form><p className="px-4 pb-3 text-[10px] text-zinc-600">Powered by Gemini. Portfolio context is sent to the AI API; the API key stays server-side.</p></motion.div>}</AnimatePresence></>
+  async function ask(e){
+    e.preventDefault()
+    sendMessage()
+  }
+
+  const suggestions = [
+    "Projects ke bare me batao",
+    "Catalog AI kya hai?",
+    "Skills & Tech Stack",
+    "Education & College"
+  ]
+
+  return <><button onClick={()=>setOpen(true)} className="assistant-launch fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-fuchsia-500 px-4 py-3 font-bold text-white shadow-2xl shadow-fuchsia-900/40"><Bot size={18}/> Ask my portfolio</button><AnimatePresence>{open&&<motion.div initial={{opacity:0,y:20,scale:.97}} animate={{opacity:1,y:0,scale:1}} exit={{opacity:0,y:20}} className="assistant-panel fixed bottom-20 right-5 z-50 w-[calc(100vw-2.5rem)] max-w-sm overflow-hidden rounded-3xl border border-white/10 bg-zinc-950 shadow-2xl light:bg-white light:border-black/10"><div className="flex items-center justify-between border-b border-white/10 p-4"><div className="flex items-center gap-2"><Bot size={18} className="text-fuchsia-400"/><b>Portfolio Assistant</b></div><button onClick={()=>setOpen(false)} aria-label="Close assistant"><X size={18}/></button></div><div className="max-h-80 space-y-3 overflow-y-auto p-4">{messages.map((m,i)=><div key={i} className={m.role==='user'?'ml-8 rounded-2xl bg-fuchsia-500 p-3 text-sm text-white whitespace-pre-wrap':'mr-4 rounded-2xl bg-white/5 p-3 text-sm leading-6 text-zinc-300 light:bg-black/5 light:text-zinc-700 whitespace-pre-wrap'}>{m.text}</div>)}{loading&&<div className="mr-4 rounded-2xl bg-white/5 p-3 text-sm text-zinc-500 light:bg-black/5">Thinking…</div>}<div ref={messagesEndRef} /></div><div className="flex gap-1.5 overflow-x-auto px-3 py-1.5 border-t border-white/5 no-scrollbar">{suggestions.map((s)=><button key={s} type="button" onClick={()=>sendMessage(s)} disabled={loading} className="whitespace-nowrap rounded-lg border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] font-medium text-zinc-300 hover:bg-white/10 hover:border-fuchsia-400/40 light:border-black/10 light:bg-black/5 light:text-zinc-700">{s}</button>)}</div><form onSubmit={ask} className="flex gap-2 border-t border-white/10 p-3"><input value={q} onChange={e=>setQ(e.target.value)} placeholder="Ask anything about Yashvendra..." disabled={loading} className="min-w-0 flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-fuchsia-400 light:border-black/10 light:bg-black/5"/><button disabled={loading} aria-label="Send message" className="rounded-xl bg-fuchsia-500 p-2.5 text-white disabled:opacity-50"><Send size={17}/></button></form><p className="px-4 pb-3 text-[10px] text-zinc-600">Powered by Gemini. Portfolio context is sent to the AI API; the API key stays server-side.</p></motion.div>}</AnimatePresence></>
 }
 
 function App(){

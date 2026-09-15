@@ -97,6 +97,26 @@ function normalize(text: string) {
     .trim();
 }
 
+function isGreeting(message: string): boolean {
+  const q = normalize(message);
+  const greetings = [
+    'h', 'hi', 'hello', 'hey', 'heyy', 'hola', 'namaste', 'namaskar',
+    'kaise ho', 'kaisa hai', 'kya haal hai', 'good morning', 'good evening',
+    'good afternoon', 'hii', 'hiii', 'wassup', 'sup', 'yo'
+  ];
+  return greetings.includes(q) || (q.length <= 4 && (q.startsWith('hi') || q.startsWith('he') || q === 'h'));
+}
+
+function isHindiOrHinglish(message: string): boolean {
+  const q = normalize(message);
+  const hindiWords = [
+    'batao', 'kya', 'hai', 'kaise', 'kaisa', 'bare', 'me', 'mein',
+    'ke', 'ki', 'ka', 'ko', 'karo', 'kahan', 'bataiye', 'kuch', 'bhi',
+    'padhai', 'shiksha', 'kaam', 'chahiye', 'karna', 'karke', 'aap', 'tum'
+  ];
+  return hindiWords.some(w => q.split(' ').includes(w));
+}
+
 function scoreProject(project: any, query: string) {
   const q = normalize(query);
   const searchableText = normalize(`
@@ -119,7 +139,7 @@ function scoreProject(project: any, query: string) {
   return score;
 }
 
-function retrieveProjects(query: string, limit = 3) {
+function retrieveProjects(query: string, limit = 5) {
   const normalizedQuery = normalize(query);
   const exactMatches = (portfolio.projects || []).filter((project: any) => {
     return normalizedQuery.includes(normalize(project.name));
@@ -136,69 +156,110 @@ function retrieveProjects(query: string, limit = 3) {
     .slice(0, limit);
 }
 
-function getIntent(message: string) {
-  const q = normalize(message);
-  if (q.includes('skill') || q.includes('technology') || q.includes('tech stack') || q.includes('programming') || q.includes('language')) {
-    return 'skills';
-  }
-  if (q.includes('education') || q.includes('study') || q.includes('college') || q.includes('university') || q.includes('degree') || q.includes('bca')) {
-    return 'education';
-  }
-  if (q.includes('achievement') || q.includes('hackathon') || q.includes('internship') || q.includes('kaggle')) {
-    return 'achievements';
-  }
-  if (q.includes('ai') || q.includes('rag') || q.includes('model') || q.includes('llm') || q.includes('artificial intelligence')) {
-    return 'ai';
-  }
-  return 'project';
-}
-
-function getRelevantContext(message: string) {
-  const intent = getIntent(message);
-  if (intent === 'skills') {
-    return `SKILLS:\n${JSON.stringify(portfolio.skills, null, 2)}`;
-  }
-  if (intent === 'education') {
-    return `ABOUT / EDUCATION:\n${JSON.stringify(portfolio.about, null, 2)}`;
-  }
-  if (intent === 'achievements') {
-    return `ACHIEVEMENTS:\n${JSON.stringify(portfolio.achievements, null, 2)}`;
-  }
-  if (intent === 'ai') {
-    return `AI INFORMATION:\n${JSON.stringify(portfolio.ai, null, 2)}\nSKILLS:\n${JSON.stringify(portfolio.skills?.ai, null, 2)}`;
-  }
-  const results = retrieveProjects(message, 3);
-  if (results.length === 0) {
-    return `PORTFOLIO SUMMARY:\n${JSON.stringify({ about: portfolio.about, skills: portfolio.skills, projects: portfolio.projects }, null, 2)}`;
-  }
-  return results.map(({ project }) => `PROJECT:\n${JSON.stringify(project, null, 2)}`).join('\n');
-}
-
 function buildDirectAnswer(message: string): string {
-  const intent = getIntent(message);
-  if (intent === 'skills') {
+  const isHindi = isHindiOrHinglish(message);
+  const q = normalize(message);
+
+  if (isGreeting(message)) {
+    if (isHindi) {
+      return "Namaste! Main Yashvendra Sahu ka AI Portfolio Assistant hoon. Aap mujhse unke projects, skills, education ya achievements ke bare mein pooch sakte hain.";
+    }
+    return "Hi there! I am Yashvendra Sahu's Portfolio AI Assistant. Feel free to ask me about his projects, skills, education, experience, or tech stack!";
+  }
+
+  // Skills
+  if (
+    q.includes('skill') || q.includes('technology') || q.includes('tech stack') ||
+    q.includes('programming') || q.includes('language') || q.includes('stack') ||
+    q.includes('kya aata') || q.includes('tools')
+  ) {
     const prog = (portfolio.skills?.programming || []).join(', ');
     const web = (portfolio.skills?.web || []).join(', ');
     const backend = (portfolio.skills?.backend || []).join(', ');
     const db = (portfolio.skills?.database || []).join(', ');
-    return `Yashvendra's core skills include: Programming (${prog}), Frontend (${web}), Backend (${backend}), Databases (${db}), and AI/RAG workflows.`;
+    const ai = (portfolio.skills?.ai || []).join(', ');
+
+    if (isHindi) {
+      return `Yashvendra ke main technical skills yeh hain:\n\n• Programming Languages: ${prog}\n• Frontend: ${web}\n• Backend: ${backend}\n• Databases: ${db}\n• AI & Machine Learning: ${ai}\n• Tools: Git, GitHub`;
+    }
+    return `Here are Yashvendra's core skills:\n\n• Programming: ${prog}\n• Web / Frontend: ${web}\n• Backend: ${backend}\n• Databases: ${db}\n• AI & ML: ${ai}\n• Tools: Git, GitHub`;
   }
-  if (intent === 'education') {
-    return `Yashvendra is pursuing ${portfolio.about?.education} at ${portfolio.about?.university} (${portfolio.about?.duration}), focusing on modern web development and practical AI systems.`;
+
+  // Education
+  if (
+    q.includes('education') || q.includes('study') || q.includes('college') ||
+    q.includes('university') || q.includes('degree') || q.includes('bca') ||
+    q.includes('padhai') || q.includes('shiksha')
+  ) {
+    if (isHindi) {
+      return `Yashvendra ${portfolio.about?.university} se ${portfolio.about?.education} (${portfolio.about?.duration}) kar rahe hain. Unka main focus Full-Stack Web Development aur AI-Powered / RAG applications banane par hai.`;
+    }
+    return `Yashvendra is currently pursuing ${portfolio.about?.education} at ${portfolio.about?.university} (${portfolio.about?.duration}), with a focus on modern full-stack web development and AI-powered systems.`;
   }
-  if (intent === 'achievements') {
-    const ach = (portfolio.achievements || []).join(', ');
-    return `Yashvendra's key achievements include: ${ach}.`;
+
+  // Achievements
+  if (
+    q.includes('achievement') || q.includes('hackathon') || q.includes('internship') ||
+    q.includes('kaggle') || q.includes('award') || q.includes('experience') || q.includes('journey')
+  ) {
+    const ach = (portfolio.achievements || []).map((a: string) => `• ${a}`).join('\n');
+    if (isHindi) {
+      return `Yashvendra ke mukhya achievements aur highlights:\n\n${ach}`;
+    }
+    return `Here are Yashvendra's key achievements and highlights:\n\n${ach}`;
   }
-  if (intent === 'ai') {
-    return `Yashvendra specializes in AI-powered applications, RAG (Retrieval-Augmented Generation), and grounding LLMs in structured product and domain data.`;
+
+  // AI & RAG
+  if (
+    q.includes('ai') || q.includes('rag') || q.includes('model') ||
+    q.includes('llm') || q.includes('artificial intelligence')
+  ) {
+    if (isHindi) {
+      return `Yashvendra AI-powered applications aur RAG (Retrieval-Augmented Generation) workflows par focus karte hain, jisme LLMs ko structured data aur domain context ke sath connect karke reliable aur accurate outputs banaye jaate hain.`;
+    }
+    return `Yashvendra specializes in building practical AI applications and RAG (Retrieval-Augmented Generation) workflows, grounding LLMs with real-world data and structured backend APIs.`;
   }
-  const results = retrieveProjects(message, 2);
-  if (results.length > 0) {
-    const p = results[0].project;
-    return `${p.name} (${p.category}): ${p.description}. Technologies used: ${p.technologies?.join(', ')}.`;
+
+  // Contact / Resume / Hire
+  if (
+    q.includes('contact') || q.includes('email') || q.includes('mail') ||
+    q.includes('hire') || q.includes('resume') || q.includes('cv') ||
+    q.includes('linkedin') || q.includes('github') || q.includes('sampark')
+  ) {
+    if (isHindi) {
+      return "Aap Yashvendra se email: yadvendrasingrual@gmail.com par contact kar sakte hain ya unke LinkedIn (yashvendra-sahu) aur GitHub (Yashvendrasahu) profiles check kar sakte hain.";
+    }
+    return "You can reach Yashvendra via email at yadvendrasingrual@gmail.com, or connect on LinkedIn (yashvendra-sahu) and GitHub (Yashvendrasahu).";
   }
-  return `Yashvendra is a Full Stack & AI developer specializing in React, Node.js, Supabase, and RAG-powered applications.`;
+
+  // Projects
+  const matched = retrieveProjects(message, 5);
+  const isGeneralProjectQuery = q.includes('project') || q.includes('kaam') || q.includes('work') || q.includes('build');
+
+  if (matched.length > 0 && !isGeneralProjectQuery) {
+    const p = matched[0].project;
+    if (isHindi) {
+      return `📌 ${p.name} (${p.category}):\n${p.description}\n\nTechnologies: ${p.technologies?.join(', ')}`;
+    }
+    return `📌 ${p.name} (${p.category}):\n${p.description}\n\nTechnologies: ${p.technologies?.join(', ')}`;
+  }
+
+  // List of all projects
+  if (isGeneralProjectQuery || matched.length > 0) {
+    const list = (portfolio.projects || []).map((p: any) =>
+      `• ${p.name} (${p.category}): ${p.description} [Tech: ${p.technologies?.join(', ')}]`
+    ).join('\n\n');
+
+    if (isHindi) {
+      return `Yashvendra ke mukhya projects yeh hain:\n\n${list}`;
+    }
+    return `Here are Yashvendra's featured projects:\n\n${list}`;
+  }
+
+  if (isHindi) {
+    return "Yashvendra ek Full Stack & AI Developer hain jo React, Node.js, Supabase, aur RAG-based AI applications build karte hain. Aap unke projects, skills, education ya contact ke bare me pooch sakte hain.";
+  }
+  return "Yashvendra is a Full Stack & AI Developer specializing in React, Node.js, Supabase, and RAG applications. Ask me about his projects, skills, education, or experience!";
 }
 
 // Health check endpoint
@@ -217,9 +278,8 @@ app.post('/api/chat', async (req, res) => {
 
     const apiKey = process.env.GEMINI_API_KEY;
 
-    // If Gemini API Key is configured, use Gemini SDK with RAG context
+    // If Gemini API Key is configured, use Gemini SDK with full rich context
     if (apiKey) {
-      // Prioritize high-throughput flash-lite and flash models
       const candidateModels = ['gemini-3.1-flash-lite', 'gemini-3.8-flash', 'gemini-flash-latest'];
       const ai = new GoogleGenAI({
         apiKey,
@@ -229,25 +289,27 @@ app.post('/api/chat', async (req, res) => {
           },
         },
       });
-      const retrievedContext = getRelevantContext(message);
 
       const systemInstruction = `
-You are Yashvendra Sahu's Portfolio AI Assistant.
-Answer naturally, accurately and concisely using ONLY the supplied portfolio data.
+You are Yashvendra Sahu's friendly, articulate, and intelligent Portfolio AI Assistant.
 
-RULES:
-- Answer based on the portfolio information.
-- If information is not in the portfolio, politely state: "I don't have that information in Yashvendra's portfolio."
-- Keep the response concise, helpful, and professional.
+PORTFOLIO INFORMATION:
+${JSON.stringify(portfolio, null, 2)}
+Contact Info:
+- Email: yadvendrasingrual@gmail.com
+- GitHub: https://github.com/Yashvendrasahu
+- LinkedIn: https://www.linkedin.com/in/yashvendra-sahu-4b8070310
+
+INSTRUCTIONS & BEHAVIOR:
+1. GREETINGS: If the user greets (e.g. "hi", "hello", "h", "namaste", "kaise ho", "hey"), greet them warmly and politely invite them to explore Yashvendra's projects, tech stack, education, or achievements.
+2. LANGUAGE: Answer in the same language/script the user is using (Hindi, Hinglish, or English).
+3. ACCURACY: Base answers accurately on Yashvendra's portfolio data.
+4. PROJECTS: When asked about projects or "projects ke bare me batao", list and describe his major projects (Catalog AI, ApniDukaan, CineBook, KrishiMitra, Parking Management System) with technologies used, clearly and completely.
+5. FORMATTING: Use clean bullet points, emojis where appropriate, and ensure your answer is complete (never cut off mid-sentence).
+6. OUT OF SCOPE: For personal questions outside the portfolio (e.g., favorite food, personal relationships), politely explain that you can only answer questions related to Yashvendra's portfolio, skills, projects, and professional background.
 `;
 
-      const prompt = `
-RELEVANT PORTFOLIO DATA:
-${retrievedContext}
-
-USER QUESTION:
-${message}
-`;
+      const prompt = `User query: ${message}`;
 
       for (const model of candidateModels) {
         try {
@@ -256,8 +318,8 @@ ${message}
             contents: prompt,
             config: {
               systemInstruction,
-              temperature: 0.2,
-              maxOutputTokens: 300,
+              temperature: 0.3,
+              maxOutputTokens: 1000,
             },
           });
 
